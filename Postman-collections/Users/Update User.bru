@@ -1,0 +1,30 @@
+meta {
+  name: Update User
+  type: http
+  seq: 7
+}
+
+put {
+  url: {{normalUrl}}/users/{{userId}}
+  body: json
+  auth: inherit
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "fullname": "John Smith",
+    "email": "john.smith@example.com"
+  }
+}
+
+settings {
+  encodeUrl: true
+}
+
+docs {
+  Update user information. All fields are optional.
+}

@@ -1,0 +1,295 @@
+{
+	"info": {
+		"_postman_id": "293e23d9-4f62-40de-bf8c-322c8ed2fd06",
+		"name": "Organisation",
+		"description": "API collection for Organisation module endpoints",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "48684949",
+		"_collection_link": "https://crimson-crescent-128577.postman.co/workspace/adsaga~317b4d99-1c06-4c6b-819f-1f722df79942/collection/30815610-293e23d9-4f62-40de-bf8c-322c8ed2fd06?action=share&source=collection_link&creator=48684949"
+	},
+	"item": [
+		{
+			"name": "Get All Organisations",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{normalUrl}}/organisations",
+					"host": [
+						"{{normalUrl}}"
+					],
+					"path": [
+						"organisations"
+					]
+				},
+				"description": "Retrieve all organisations with their subscription details"
+			},
+			"response": []
+		},
+		{
+			"name": "Get Organisation by ID",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{normalUrl}}/organisations/{{organisation_id}}",
+					"host": [
+						"{{normalUrl}}"
+					],
+					"path": [
+						"organisations",
+						"{{organisation_id}}"
+					]
+				},
+				"description": "Retrieve a specific organisation by its UUID"
+			},
+			"response": []
+		},
+		{
+			"name": "Create Organisation (with PROT default)",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"organisation_name\": \"Adsaga.ai\",\n  \"website\": \"https://x2valves.in/\"\n}"
+				},
+				"url": {
+					"raw": "{{normalUrl}}/organisations",
+					"host": [
+						"{{normalUrl}}"
+					],
+					"path": [
+						"organisations"
+					]
+				},
+				"description": "Create a new organisation (subscription_code will default to 'PROT' if not provided)"
+			},
+			"response": []
+		},
+		{
+			"name": "Create Organisation (with custom subscription)",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"organisation_name\": \"Premium Organisation\",\n  \"website\": \"https://premiumorg.com\",\n  \"subscription_code\": \"PREMIUM\"\n}"
+				},
+				"url": {
+					"raw": "{{normalUrl}}/organisations",
+					"host": [
+						"{{normalUrl}}"
+					],
+					"path": [
+						"organisations"
+					]
+				},
+				"description": "Create a new organisation with a specific subscription code"
+			},
+			"response": []
+		},
+		{
+			"name": "Create Organisation (minimal data)",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"organisation_name\": \"Minimal Org\"\n}"
+				},
+				"url": {
+					"raw": "{{normalUrl}}/organisations",
+					"host": [
+						"{{normalUrl}}"
+					],
+					"path": [
+						"organisations"
+					]
+				},
+				"description": "Create a new organisation with only required fields (will default to PROT subscription)"
+			},
+			"response": []
+		},
+		{
+			"name": "Update Organisation",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"organisation_name\": \"Updated Organisation Name\",\n  \"website\": \"https://updatedorg.com\",\n  \"subscription_code\": \"ENTERPRISE\"\n}"
+				},
+				"url": {
+					"raw": "{{normalUrl}}/organisations/{{organisation_id}}",
+					"host": [
+						"{{normalUrl}}"
+					],
+					"path": [
+						"organisations",
+						"{{organisation_id}}"
+					]
+				},
+				"description": "Update an existing organisation"
+			},
+			"response": []
+		},
+		{
+			"name": "Update Organisation (partial)",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"organisation_name\": \"Partially Updated Org\",\n  \"website\": null\n}"
+				},
+				"url": {
+					"raw": "{{normalUrl}}/organisations/{{organisation_id}}",
+					"host": [
+						"{{normalUrl}}"
+					],
+					"path": [
+						"organisations",
+						"{{organisation_id}}"
+					]
+				},
+				"description": "Update only specific fields of an organisation"
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Organisation",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{normalUrl}}/organisations/{{organisation_id}}",
+					"host": [
+						"{{normalUrl}}"
+					],
+					"path": [
+						"organisations",
+						"{{organisation_id}}"
+					]
+				},
+				"description": "Delete an organisation by its UUID"
+			},
+			"response": []
+		},
+		{
+			"name": "Get Organisations by Subscription Code",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{normalUrl}}/organisations/subscription/{{subscription_code}}",
+					"host": [
+						"{{normalUrl}}"
+					],
+					"path": [
+						"organisations",
+						"subscription",
+						"{{subscription_code}}"
+					]
+				},
+				"description": "Get all organisations that have a specific subscription code"
+			},
+			"response": []
+		},
+		{
+			"name": "Get Organisations by PROT Subscription",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{normalUrl}}/organisations/subscription/PROT",
+					"host": [
+						"{{normalUrl}}"
+					],
+					"path": [
+						"organisations",
+						"subscription",
+						"PROT"
+					]
+				},
+				"description": "Get all organisations with PROT subscription (default subscription)"
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// Auto-generate UUID for organisation_id if not set",
+					"if (!pm.variables.get('organisation_id') || pm.variables.get('organisation_id') === '00000000-0000-0000-0000-000000000000') {",
+					"    const uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {",
+					"        const r = Math.random() * 16 | 0;",
+					"        const v = c === 'x' ? r : (r & 0x3 | 0x8);",
+					"        return v.toString(16);",
+					"    });",
+					"    pm.variables.set('organisation_id', uuid);",
+					"}"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// Auto-extract organisation_id from response for subsequent requests",
+					"if (pm.response.code === 201 || pm.response.code === 200) {",
+					"    try {",
+					"        const responseJson = pm.response.json();",
+					"        if (responseJson.data && responseJson.data.organisation_id) {",
+					"            pm.variables.set('organisation_id', responseJson.data.organisation_id);",
+					"        }",
+					"    } catch (e) {",
+					"        // Ignore if response is not JSON",
+					"    }",
+					"}"
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "organisation_id",
+			"value": "00000000-0000-0000-0000-000000000000",
+			"description": "UUID of an organisation for testing"
+		},
+		{
+			"key": "subscription_code",
+			"value": "PROT",
+			"description": "Subscription code for filtering organisations"
+		}
+	]
+}

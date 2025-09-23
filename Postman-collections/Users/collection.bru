@@ -1,0 +1,25 @@
+meta {
+  name: Users
+}
+
+auth {
+  mode: none
+}
+
+vars:pre-request {
+  normalUrl: http://localhost:8080/api
+  authToken: 
+  userId: 
+  organisationId: 
+}
+
+script:pre-request {
+  // Auto-set authentication token from cookie if available
+  // if (pm.cookies.has('auth_token')) {
+  //     bru.setVar('authToken', pm.cookies.get('auth_token'));
+  }
+}
+
+docs {
+  Collection of APIs for user management including registration, login, and user operations
+}

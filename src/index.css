@@ -1,0 +1,87 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Light theme colors */
+  --background: #ffffff;
+  --foreground: #000000;
+  --card: #ffffff;
+  --card-foreground: #000000;
+  --popover: #ffffff;
+  --popover-foreground: #000000;
+  --primary: #844ee0;
+  --primary-foreground: #ffffff;
+  --secondary: #f8f9fa;
+  --secondary-foreground: #000000;
+  --muted: #f8f9fa;
+  --muted-foreground: #6b7280;
+  --accent: #844ee0;
+  --accent-foreground: #ffffff;
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+  --border: #e5e7eb;
+  --input: #ffffff;
+  --ring: #844ee0;
+}
+
+.dark {
+  --background: #0a0a0a;
+  --foreground: #ffffff;
+  --card: #1a1a1a;
+  --card-foreground: #ffffff;
+  --popover: #1a1a1a;
+  --popover-foreground: #ffffff;
+  --primary: #844ee0;
+  --primary-foreground: #ffffff;
+  --secondary: #2a2a2a;
+  --secondary-foreground: #ffffff;
+  --muted: #2a2a2a;
+  --muted-foreground: #9ca3af;
+  --accent: #844ee0;
+  --accent-foreground: #ffffff;
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+  --border: #374151;
+  --input: #1a1a1a;
+  --ring: #844ee0;
+}
+
+/* Custom component styles */
+@layer components {
+  .btn {
+    @apply inline-flex items-center justify-center gap-0.5 px-6 py-3 rounded-lg font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-60 disabled:cursor-not-allowed;
+  }
+  
+  .btn-primary {
+    @apply bg-primary text-primary-foreground hover:bg-accent hover:-translate-y-0.5 hover:shadow-lg focus:ring-primary;
+  }
+  
+  .btn-secondary {
+    @apply bg-secondary text-secondary-foreground hover:bg-muted hover:shadow-md focus:ring-secondary;
+  }
+  
+  .btn-danger {
+    @apply bg-destructive text-destructive-foreground hover:bg-red-600 hover:shadow-lg focus:ring-destructive;
+  }
+  
+  .card {
+    @apply bg-card text-card-foreground rounded-xl p-6 shadow-sm border border-border transition-all duration-300 hover:shadow-lg hover:-translate-y-1;
+  }
+  
+  .form-input {
+    @apply w-full px-4 py-3 rounded-lg border border-border bg-input text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all duration-200;
+  }
+  
+  .form-label {
+    @apply block text-sm font-medium text-foreground mb-2;
+  }
+  
+  .form-group {
+    @apply mb-6;
+  }
+  
+  .theme-toggle {
+    @apply w-10 h-10 rounded-lg border border-border bg-secondary text-secondary-foreground hover:bg-muted hover:scale-105 transition-all duration-200 flex items-center justify-center;
+  }
+}

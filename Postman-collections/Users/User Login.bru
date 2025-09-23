@@ -1,0 +1,41 @@
+meta {
+  name: User Login
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{normalUrl}}/users/login
+  body: json
+  auth: inherit
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "email": "kevalmaru5623@gmail.com",
+    "password": "kiyaxoxo"
+  }
+}
+
+script:post-response {
+  if (res.getStatus() === 200) {
+      const response = res.getBody();
+      if (response.success && response.data.token) {
+          bru.setVar('authToken', response.data.token);
+          bru.setVar('userId', response.data.user.user_id);
+          bru.setVar('organisationId', response.data.user.organisation_id);
+      }
+  }
+}
+
+settings {
+  encodeUrl: true
+}
+
+docs {
+  Login user and receive JWT token. Token will be stored in cookie and also returned in response.
+}

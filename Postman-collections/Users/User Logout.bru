@@ -1,0 +1,23 @@
+meta {
+  name: User Logout
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{normalUrl}}/users/logout
+  body: none
+  auth: inherit
+}
+
+headers {
+  Content-Type: application/json
+}
+
+settings {
+  encodeUrl: true
+}
+
+docs {
+  Logout user and clear authentication cookie.
+}

@@ -1,0 +1,39 @@
+meta {
+  name: Create Organisation (Protected)
+  type: http
+  seq: 9
+}
+
+post {
+  url: {{normalUrl}}/organisations
+  body: json
+  auth: inherit
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "organisation_name": "Acme Corporation",
+    "website": "https://acme.com",
+    "subscription_code": "PROT",
+    "locations": [
+      {
+        "address": "123 Main St",
+        "city": "New York",
+        "state": "NY",
+        "country": "USA"
+      }
+    ]
+  }
+}
+
+settings {
+  encodeUrl: true
+}
+
+docs {
+  Create organisation (requires authentication). This will automatically associate the organisation with the authenticated user.
+}
