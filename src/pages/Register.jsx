@@ -1,19 +1,28 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { useAuth } from '../contexts/AuthContext'
+import { useAuth } from '../hooks/useAuth'
+import { authService } from '../services/authService'
+import AdSagaLogo from '../assets/final_bomb_resize.jpg'
 
 const Register = () => {
+  const [currentStep, setCurrentStep] = useState(1) // 1: Email, 2: OTP, 3: Complete
   const [formData, setFormData] = useState({
-    fullname: '',
     email: '',
+    otp_code: '',
+    fullname: '',
     password: '',
-    confirmPassword: '',
-    organisation_name: '',
-    website: ''
+    confirmPassword: ''
   })
-  const [error, setError] = useState('')
-  const { register, loading } = useAuth()
+  const [loading, setLoading] = useState(false)
+  const { isAuthenticated, register } = useAuth()
   const navigate = useNavigate()
+
+  // Check if user is already authenticated
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/')
+    }
+  }, [isAuthenticated, navigate])
 
   const handleChange = (e) => {
     setFormData({
@@ -22,162 +31,313 @@ const Register = () => {
     })
   }
 
-  const handleSubmit = async (e) => {
+  // Step 1: Initiate Registration (Send OTP)
+  const handleInitiateRegistration = async (e) => {
     e.preventDefault()
-    setError('')
+    setLoading(true)
+
+    try {
+      const data = await authService.initiateRegistration(formData.email)
+      
+      if (data.success) {
+        setCurrentStep(2)
+      }
+    } catch (error) {
+      // Error toast is handled in authService
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  // Step 2: Verify OTP
+  const handleVerifyOTP = async (e) => {
+    e.preventDefault()
+    setLoading(true)
+
+    try {
+      const data = await authService.verifyOTP(formData.email, formData.otp_code)
+      
+      if (data.success) {
+        setCurrentStep(3)
+      }
+    } catch (error) {
+      // Error toast is handled in authService
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  // Step 3: Complete Registration
+  const handleCompleteRegistration = async (e) => {
+    e.preventDefault()
 
     if (formData.password !== formData.confirmPassword) {
-      setError('Passwords do not match')
+      // Show error toast for validation
+      const { toast } = await import('react-toastify')
+      toast.error('Passwords do not match')
       return
     }
 
     if (formData.password.length < 6) {
-      setError('Password must be at least 6 characters long')
+      // Show error toast for validation
+      const { toast } = await import('react-toastify')
+      toast.error('Password must be at least 6 characters long')
       return
     }
 
+    setLoading(true)
+
     try {
-      await register({
-        fullname: formData.fullname,
-        email: formData.email,
-        password: formData.password,
-        organisation: {
-          organisation_name: formData.organisation_name,
-          website: formData.website
+      const data = await authService.completeRegistration(
+        formData.email,
+        formData.otp_code,
+        formData.fullname,
+        formData.password
+      )
+
+      if (data.success) {
+        // Store user data in Redux and redirect to dashboard
+        const userData = {
+          user: data.data, // User data from response
+          token: data.token || 'temp-token', // Use token if provided, otherwise temp
+          message: data.message
         }
-      })
-      navigate('/dashboard')
+        
+        // Use Redux register action to store user data
+        const result = await register(userData)
+        
+        if (result.type === 'auth/registerUser/fulfilled') {
+          navigate('/')
+        }
+      }
     } catch (error) {
-      setError(error.message)
+      // Error toast is handled in authService
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleSubmit = (e) => {
+    if (currentStep === 1) {
+      handleInitiateRegistration(e)
+    } else if (currentStep === 2) {
+      handleVerifyOTP(e)
+    } else if (currentStep === 3) {
+      handleCompleteRegistration(e)
     }
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-2xl w-full space-y-8">
-        <div className="card">
-          <div className="text-center">
-            <h2 className="text-3xl font-bold text-foreground mb-2">Register</h2>
-            <p className="text-muted-foreground">Create your account and organisation</p>
+    <div className="h-screen flex bg-white overflow-hidden">
+      {/* Left side - Brand Showcase */}
+      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-purple-600 to-purple-700">
+        {/* Content */}
+        <div className="relative z-10 flex flex-col justify-center items-center text-white p-12 text-center">
+          <h1 className="text-5xl font-bold mb-6 text-white">
+            AdSaga.ai
+          </h1>
+          <p className="text-2xl mb-6 text-purple-100 font-medium">Modern Digital Growth Partner</p>
+          <p className="text-lg text-purple-200 leading-relaxed">
+            Helping B2B companies scale with automation, AI, and data-driven marketing
+          </p>
+        </div>
+      </div>
+
+      {/* Right side - Register Form */}
+      <div className="w-full lg:w-1/2 flex items-center justify-center px-4 sm:px-6 lg:px-8 bg-white overflow-y-auto">
+        <div className="max-w-md w-full space-y-4 py-4">
+          {/* Welcome content for desktop */}
+          <div className="hidden lg:block text-center mb-4">
+            <img 
+              src={AdSagaLogo} 
+              alt="AdSaga Logo" 
+              className="w-40 h-32 mx-auto mb-2 object-contain"
+            />
           </div>
-          
-          {error && (
-            <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-300 px-4 py-3 rounded-lg mb-6">
-              {error}
-            </div>
-          )}
 
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="form-group">
-                <label htmlFor="fullname" className="form-label">Full Name</label>
-                <input
-                  type="text"
-                  id="fullname"
-                  name="fullname"
-                  value={formData.fullname}
-                  onChange={handleChange}
-                  className="form-input"
-                  placeholder="Enter your full name"
-                  required
-                />
-              </div>
+          {/* Logo for mobile */}
+          <div className="lg:hidden text-center mb-4">
+            <img 
+              src={AdSagaLogo} 
+              alt="AdSaga Logo" 
+              className="w-40 h-32 mx-auto object-contain"
+            />
+          </div>
 
-              <div className="form-group">
-                <label htmlFor="email" className="form-label">Email</label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  className="form-input"
-                  placeholder="Enter your email"
-                  required
-                />
+          <div className="bg-white shadow-xl rounded-lg p-8 border border-gray-200">
+            {/* Progress Steps */}
+            <div className="flex justify-center mb-6">
+              <div className="flex items-center space-x-2">
+                {[1, 2, 3].map((step) => (
+                  <div key={step} className="flex items-center">
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold ${
+                      currentStep >= step 
+                        ? 'bg-purple-600 text-white' 
+                        : 'bg-gray-200 text-gray-500'
+                    }`}>
+                      {step}
+                    </div>
+                    {step < 3 && (
+                      <div className={`w-8 h-0.5 ${
+                        currentStep > step ? 'bg-purple-600' : 'bg-gray-200'
+                      }`}></div>
+                    )}
+                  </div>
+                ))}
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="form-group">
-                <label htmlFor="password" className="form-label">Password</label>
-                <input
-                  type="password"
-                  id="password"
-                  name="password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  className="form-input"
-                  placeholder="Enter your password"
-                  required
-                  minLength="6"
-                />
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="confirmPassword" className="form-label">Confirm Password</label>
-                <input
-                  type="password"
-                  id="confirmPassword"
-                  name="confirmPassword"
-                  value={formData.confirmPassword}
-                  onChange={handleChange}
-                  className="form-input"
-                  placeholder="Confirm your password"
-                  required
-                />
-              </div>
+            <div className="text-center">
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">
+                {currentStep === 1 && 'Enter Email'}
+                {currentStep === 2 && 'Verify Email'}
+                {currentStep === 3 && 'Complete Registration'}
+              </h2>
+              <p className="text-sm text-gray-600">
+                {currentStep === 1 && 'We\'ll send you a verification code'}
+                {currentStep === 2 && 'Enter the code sent to your email'}
+                {currentStep === 3 && 'Set your password and complete registration'}
+              </p>
             </div>
+            
 
-            <div className="border-t border-border pt-6">
-              <h3 className="text-xl font-semibold text-foreground mb-4">Organisation Details</h3>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="form-group">
-                  <label htmlFor="organisation_name" className="form-label">Organisation Name</label>
+            <form onSubmit={handleSubmit} className="mt-4 space-y-4">
+              {/* Step 1: Email */}
+              {currentStep === 1 && (
+                <div>
+                  <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+                    Email Address
+                  </label>
                   <input
-                    type="text"
-                    id="organisation_name"
-                    name="organisation_name"
-                    value={formData.organisation_name}
+                    type="email"
+                    id="email"
+                    name="email"
+                    value={formData.email}
                     onChange={handleChange}
-                    className="form-input"
-                    placeholder="Enter organisation name"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition duration-200"
+                    placeholder="Enter your email address"
                     required
                   />
                 </div>
+              )}
 
-                <div className="form-group">
-                  <label htmlFor="website" className="form-label">Website (Optional)</label>
+              {/* Step 2: OTP Verification */}
+              {currentStep === 2 && (
+                <div>
+                  <label htmlFor="otp_code" className="block text-sm font-medium text-gray-700 mb-2">
+                    Verification Code
+                  </label>
                   <input
-                    type="url"
-                    id="website"
-                    name="website"
-                    value={formData.website}
+                    type="text"
+                    id="otp_code"
+                    name="otp_code"
+                    value={formData.otp_code}
                     onChange={handleChange}
-                    className="form-input"
-                    placeholder="https://example.com"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition duration-200 text-center text-lg tracking-widest"
+                    placeholder="Enter 6-digit code"
+                    maxLength="6"
+                    required
                   />
+                  <p className="text-xs text-gray-500 mt-1">
+                    Code sent to: {formData.email}
+                  </p>
                 </div>
-              </div>
+              )}
+
+              {/* Step 3: Complete Registration */}
+              {currentStep === 3 && (
+                <>
+                  <div>
+                    <label htmlFor="fullname" className="block text-sm font-medium text-gray-700 mb-2">
+                      Full Name
+                    </label>
+                    <input
+                      type="text"
+                      id="fullname"
+                      name="fullname"
+                      value={formData.fullname}
+                      onChange={handleChange}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition duration-200"
+                      placeholder="Enter your full name"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+                      Password
+                    </label>
+                    <input
+                      type="password"
+                      id="password"
+                      name="password"
+                      value={formData.password}
+                      onChange={handleChange}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition duration-200"
+                      placeholder="Enter your password"
+                      required
+                      minLength="6"
+                    />
+                  </div>
+
+                  <div>
+                    <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-2">
+                      Confirm Password
+                    </label>
+                    <input
+                      type="password"
+                      id="confirmPassword"
+                      name="confirmPassword"
+                      value={formData.confirmPassword}
+                      onChange={handleChange}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition duration-200"
+                      placeholder="Confirm your password"
+                      required
+                    />
+                  </div>
+                </>
+              )}
+
+              <button 
+                type="submit"
+                className={`w-full py-3 px-4 rounded-lg font-semibold text-white transition duration-200 ${
+                  loading 
+                    ? 'bg-gray-400 cursor-not-allowed' 
+                    : 'bg-purple-600 hover:bg-purple-700 transform hover:scale-105'
+                }`}
+                disabled={loading}
+              >
+                {loading ? (
+                  currentStep === 1 ? 'Sending Code...' :
+                  currentStep === 2 ? 'Verifying...' :
+                  'Creating Account...'
+                ) : (
+                  currentStep === 1 ? 'Send Verification Code' :
+                  currentStep === 2 ? 'Verify Code' :
+                  'Create Account'
+                )}
+              </button>
+
+              {/* Back button for steps 2 and 3 */}
+              {(currentStep === 2 || currentStep === 3) && (
+                <button
+                  type="button"
+                  onClick={() => setCurrentStep(currentStep - 1)}
+                  className="w-full py-3 px-4 rounded-lg font-semibold text-gray-600 border border-gray-300 hover:bg-gray-50 transition duration-200"
+                >
+                  Back
+                </button>
+              )}
+            </form>
+
+            <div className="text-center mt-6">
+              <p className="text-gray-600">
+                Already have an account?{' '}
+                <Link to="/login" className="text-purple-600 hover:text-purple-700 font-medium transition-colors duration-200">
+                  Login here
+                </Link>
+              </p>
             </div>
-
-            <button 
-              type="submit" 
-              className="btn btn-primary w-full"
-              disabled={loading}
-            >
-              {loading ? 'Creating Account...' : 'Register'}
-            </button>
-          </form>
-
-          <div className="text-center mt-6">
-            <p className="text-muted-foreground">
-              Already have an account?{' '}
-              <Link to="/login" className="text-primary hover:text-accent font-medium transition-colors duration-200">
-                Login here
-              </Link>
-            </p>
           </div>
         </div>
       </div>

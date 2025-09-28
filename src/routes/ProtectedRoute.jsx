@@ -1,6 +1,6 @@
 import React from 'react'
 import { Navigate, useLocation } from 'react-router-dom'
-import { useAuth } from '../contexts/AuthContext'
+import { useAuth } from '../hooks/useAuth'
 
 const ProtectedRoute = ({ children, requireAuth = true }) => {
   const { isAuthenticated, loading } = useAuth()
@@ -25,7 +25,7 @@ const ProtectedRoute = ({ children, requireAuth = true }) => {
 
   // If user is authenticated but trying to access auth pages (login/register)
   if (!requireAuth && isAuthenticated) {
-    return <Navigate to="/dashboard" replace />
+    return <Navigate to="/" replace />
   }
 
   return children

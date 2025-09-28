@@ -1,0 +1,244 @@
+{
+	"info": {
+		"_postman_id": "03c559dc-f2ac-4734-939e-ec06331bbd48",
+		"name": "Workflow Config",
+		"description": "API collection for Workflow Config module",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "48684949",
+		"_collection_link": "https://crimson-crescent-128577.postman.co/workspace/adsaga~317b4d99-1c06-4c6b-819f-1f722df79942/collection/30815610-03c559dc-f2ac-4734-939e-ec06331bbd48?action=share&source=collection_link&creator=48684949"
+	},
+	"item": [
+		{
+			"name": "Get Workflow Config by ID",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{authToken}}",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{normalUrl}}/workflow-configs/c60647d9-3319-4131-b347-6c28af53ec94",
+					"host": [
+						"{{normalUrl}}"
+					],
+					"path": [
+						"workflow-configs",
+						"c60647d9-3319-4131-b347-6c28af53ec94"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Workflow Configs by Organisation",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{authToken}}",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{normalUrl}}/workflow-configs/organisation",
+					"host": [
+						"{{normalUrl}}"
+					],
+					"path": [
+						"workflow-configs",
+						"organisation"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Workflow Configs by User",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{authToken}}",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{normalUrl}}/workflow-configs/user/me",
+					"host": [
+						"{{normalUrl}}"
+					],
+					"path": [
+						"workflow-configs",
+						"user",
+						"me"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Workflow Config",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{authToken}}",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"domains\": [\n    \"example.com\",\n    \"test.com\"\n  ],\n  \"locations\": [\n    \"New York\",\n    \"San Francisco\"\n  ],\n  \"designations\": [\n    \"CEO\",\n    \"CTO\",\n    \"Marketing Manager\"\n  ],\n  \"runs_at\": \"2024-01-15T10:00:00Z\",\n  \"leads_count\": 50\n}"
+				},
+				"url": {
+					"raw": "{{normalUrl}}/workflow-configs",
+					"host": [
+						"{{normalUrl}}"
+					],
+					"path": [
+						"workflow-configs"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Workflow Config",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{authToken}}",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"domains\": [\n    \"updated-example.com\",\n    \"updated-test.com\",\n    \"new-domain.com\"\n  ],\n  \"locations\": [\n    \"Los Angeles\",\n    \"Chicago\"\n  ],\n  \"designations\": [\n    \"VP Sales\",\n    \"Product Manager\"\n  ],\n  \"runs_at\": \"2024-01-20T14:30:00Z\",\n  \"leads_count\": 5\n}"
+				},
+				"url": {
+					"raw": "{{normalUrl}}/workflow-configs/c60647d9-3319-4131-b347-6c28af53ec94",
+					"host": [
+						"{{normalUrl}}"
+					],
+					"path": [
+						"workflow-configs",
+						"c60647d9-3319-4131-b347-6c28af53ec94"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Workflow Config",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{authToken}}",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{normalUrl}}/workflow-configs/{{workflowConfigId}}",
+					"host": [
+						"{{normalUrl}}"
+					],
+					"path": [
+						"workflow-configs",
+						"{{workflowConfigId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Workflow Configs",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{authToken}}",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{normalUrl}}/workflow-configs",
+					"host": [
+						"{{normalUrl}}"
+					],
+					"path": [
+						"workflow-configs"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "normalUrl",
+			"value": "{{normalUrl}}",
+			"type": "string"
+		},
+		{
+			"key": "authToken",
+			"value": "your-auth-token-here",
+			"type": "string"
+		},
+		{
+			"key": "workflowConfigId",
+			"value": "workflow-config-uuid-here",
+			"type": "string"
+		},
+		{
+			"key": "organisationId",
+			"value": "organisation-uuid-here",
+			"type": "string"
+		}
+	]
+}
